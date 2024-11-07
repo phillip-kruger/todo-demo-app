@@ -28,3 +28,4 @@ ObjectStore
 
 # VS Code
 .vscode
+/transcript.txt
