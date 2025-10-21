@@ -4,14 +4,17 @@ import io.quarkiverse.mcp.server.TextContent;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import io.quarkiverse.mcp.server.ToolResponse;
-import io.quarkus.panache.common.Sort;
 import io.quarkus.sample.Todo;
-import jakarta.transaction.Transactional;
+import io.quarkus.sample.TodoResource;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TodoMCPResource {
 
+    @Inject 
+    TodoResource todoResource;
+    
     @Tool(description = "Get my todo list") 
     ToolResponse getTodos(@ToolArg(description = "Include completed items", defaultValue = "false") boolean includeCompleted) { 
         return ToolResponse.success(
@@ -19,13 +22,12 @@ public class TodoMCPResource {
     }
     
     @Tool(description = "Mark a todo as completed")
-    @Transactional
     ToolResponse completeTodos(@ToolArg(description = "Todo title") String title) { 
         
         Todo todo = Todo.findByTitle(title);
         if(todo!=null){
             todo.completed = true;
-            todo.persistAndFlush();
+            todoResource.update(todo, todo.id);
             return ToolResponse.success(
                 new TextContent(getToolsAsString(false)));
         }else{
@@ -34,7 +36,7 @@ public class TodoMCPResource {
     }
     
     private String getToolsAsString(boolean includeCompleted){
-        List<Todo> all = Todo.listAll(Sort.by("order"));
+        List<Todo> all = todoResource.getAll();
         
         if(includeCompleted){
             return todoToString(all);
