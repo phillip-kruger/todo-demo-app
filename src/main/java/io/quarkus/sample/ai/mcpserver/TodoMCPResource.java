@@ -27,7 +27,7 @@ public class TodoMCPResource {
             todo.completed = true;
             todo.persistAndFlush();
             return ToolResponse.success(
-                new TextContent(getToolsAsString(true)));
+                new TextContent(getToolsAsString(false)));
         }else{
             return ToolResponse.error("Todo with title " + title + " not found");
         }
