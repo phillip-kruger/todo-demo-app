@@ -14,7 +14,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.17.3</quarkus.platform.version>
+        <quarkus.platform.version>3.29.0.CR1</quarkus.platform.version>
+        <quarkus.langchain4j.version>1.3.1</quarkus.langchain4j.version>
+        <quarkus.chappie.version>1.5.0</quarkus.chappie.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
@@ -83,42 +85,44 @@
         <dependency>
             <groupId>io.quarkiverse.langchain4j</groupId>
             <artifactId>quarkus-langchain4j-openai</artifactId>
-            <version>0.22.0</version>
+            <version>${quarkus.langchain4j.version}</version>
         </dependency>
-        
+        <dependency>
+            <groupId>io.quarkiverse.langchain4j</groupId>
+            <artifactId>quarkus-langchain4j-mcp</artifactId>
+            <version>${quarkus.langchain4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.mcp</groupId>
+            <artifactId>quarkus-mcp-server-sse</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+        <dependency>
+	    <groupId>io.quarkiverse.chappie</groupId>
+	    <artifactId>quarkus-chappie</artifactId>
+	    <version>${quarkus.chappie.version}</version>
+	</dependency>
         
         <!-- For the UI -->
-<!--        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>5.3.3</version>
-            <scope>runtime</scope>
-        </dependency>-->
         <dependency>
             <groupId>org.mvnpm.at.mvnpm</groupId>
             <artifactId>vaadin-webcomponents</artifactId>
-            <version>24.4.10</version>
-            <!--<scope>provided</scope>-->
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-web-dependency-locator</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>io.quarkiverse.web-bundler</groupId>
-            <artifactId>quarkus-web-bundler</artifactId>
-            <version>1.7.3</version>
-        </dependency>-->
-        <dependency>
-            <groupId>org.mvnpm.at.mvnpm</groupId>
-            <artifactId>vaadin-webcomponents</artifactId>
-            <version>24.3.11</version>
-            <!--<scope>provided</scope>-->
-            <scope>runtime</scope>
-        </dependency>
         
         <!-- Testing -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-scheduler</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>

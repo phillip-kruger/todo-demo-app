@@ -274,7 +274,11 @@ class TodosCards extends LitElement {
     
     _toggleSelect(e){
         let task = this._getTaskById(e.detail);
-        task.completed = !task.completed;
+        if(task.completed) {
+            task.completed = !task.completed;
+        }else {
+            task.completed = true;
+        }
         this._updateTask(task);
     }
     

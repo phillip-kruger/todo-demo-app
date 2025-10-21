@@ -1,8 +1,10 @@
 package io.quarkus.sample;
 
-import io.quarkus.sample.audit.AuditType;
+import io.quarkus.cache.CacheInvalidate;
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
-import io.quarkus.sample.ai.TodoAiService;
+import io.quarkus.sample.audit.AuditType;
 import io.vertx.core.eventbus.EventBus;
 import jakarta.inject.Inject;
 
@@ -27,9 +29,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 public class TodoResource {
 
     @Inject
-    TodoAiService ai; 
-    
-    @Inject
     EventBus bus; 
     
     @OPTIONS
@@ -47,6 +46,7 @@ public class TodoResource {
     @GET
     @Path("/{id}")
     @Operation(description = "Get a specific todo by id")
+    @CacheResult(cacheName = "todo-cache")
     public Todo getOne(@PathParam("id") Long id) {
         Todo entity = Todo.findById(id);
         if (entity == null) {
@@ -68,6 +68,7 @@ public class TodoResource {
     @Path("/{id}")
     @Transactional
     @Operation(description = "Update an exiting todo")
+    @CacheInvalidate(cacheName = "todo-cache")
     public Response update(@Valid Todo todo, @PathParam("id") Long id) {
         Todo entity = Todo.findById(id);
         if(entity.completed!=todo.completed && todo.completed){
@@ -88,6 +89,7 @@ public class TodoResource {
     @DELETE
     @Transactional
     @Operation(description = "Remove all completed todos")
+    @CacheInvalidateAll(cacheName = "todo-cache")
     public Response deleteCompleted() {
         Todo.deleteCompleted();
         return Response.noContent().build();
@@ -97,6 +99,7 @@ public class TodoResource {
     @Transactional
     @Path("/{id}")
     @Operation(description = "Delete a specific todo")
+    @CacheInvalidate(cacheName = "todo-cache")
     public Response deleteOne(@PathParam("id") Long id) {
         Todo entity = Todo.findById(id);
         if (entity == null) {
@@ -106,19 +109,4 @@ public class TodoResource {
         bus.publish(AuditType.TODO_REMOVED.name(), entity);
         return Response.noContent().build();
     }
-
-    @GET
-    @Path("/suggest")
-    @Operation(description = "Suggest something to do")
-    @Transactional
-    public Todo suggest() {
-        Todo suggestion = new Todo();
-        
-        String title = ai.suggestSomethingTodo(1,"Features of my TODO list application");
-        title = title.trim();
-        suggestion.title = title;
-        suggestion.persistAndFlush();        
-        return suggestion;
-    }
-    
 }

@@ -16,13 +16,19 @@ public class Todo extends PanacheEntity {
     @Column(unique = true)
     public String title;
 
+    @Schema(description = "Detailed description of the todo item")
+    @Column(length = 2048)
+    public String description;
+
     public boolean completed;
 
     @Column(name = "ordering")
     public int order;
 
-    @Schema(example = "https://github.com/quarkusio/todo-demo-app")
     public String url;
+
+    @Schema(description = "Category of the todo item")
+    public String category;
 
     public static List<Todo> findNotCompleted() {
         return list("completed", false);
@@ -36,4 +42,7 @@ public class Todo extends PanacheEntity {
         return delete("completed", true);
     }
 
+    public static Todo findByTitle(String title) {
+        return find("title", title).firstResult();
+    }
 }

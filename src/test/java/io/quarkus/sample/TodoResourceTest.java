@@ -58,6 +58,19 @@ public class TodoResourceTest {
 
     @Test
     @Order(4)
+    public void testAddDummyTodo() {
+        String dummyTodo = "{\"completed\":false,\"order\":99,\"title\":\"Dummy Task\"}";
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(dummyTodo)
+                .post("/api")
+                .then()
+                .statusCode(201)
+                .body("title", is("Dummy Task"));
+    }
+
     public void testUpdate() {
         given()
                 .contentType(ContentType.JSON)
